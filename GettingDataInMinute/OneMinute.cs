@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Azure_function_logs.Services;
-using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
 namespace GettingDataInMinute
@@ -15,14 +16,13 @@ namespace GettingDataInMinute
             _api = api;
         }
         
-        [Function("PullData")]
-        public async void Run([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer, ILogger log)
+        [FunctionName("PullData")]
+        public async Task Run([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer, ILogger log)
         {
             var result = await _api.GetApi();
-            var output = result.entries.First();
+            var output = result.entries.First();    
             
-            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now} Api: {output.API}" +
-                               $" Description {output.Description}");
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
             
         }
     }
