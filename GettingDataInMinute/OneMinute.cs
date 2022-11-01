@@ -9,21 +9,21 @@ namespace GettingDataInMinute
 {
     public class OneMinute
     {
-        public IPublicApi _api;
+        private IPublicApi _api;
         
-        public OneMinute(IPublicApi api )
+        public OneMinute(IPublicApi api)
         {
             _api = api;
         }
-        
+
         [FunctionName("PullData")]
-        public async Task Run([TimerTrigger("0 */1 * * * *")] TimerInfo myTimer, ILogger log)
+        public async Task Run([TimerTrigger("*/5 */1 * * * *")] TimerInfo myTimer, ILogger log)
         {
             var result = await _api.GetApi();
-            var output = result.entries.First();    
-            
-            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-            
+            var output = result.entries.First();
+
+            log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}\n API : {output.API} " +
+                               $"\n Description : {output.Description}");
         }
     }
 }
