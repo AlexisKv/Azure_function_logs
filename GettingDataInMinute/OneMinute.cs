@@ -13,10 +13,10 @@ namespace GettingDataInMinute
         private IPublicApi _api;
         private readonly StorageProvider _blobStorage;
         
-        public OneMinute(IPublicApi api)
+        public OneMinute(IPublicApi api, StorageProvider storageProvider)
         {
             _api = api;
-            _blobStorage = new StorageProvider();
+            _blobStorage = storageProvider;
         }
 
         [FunctionName("PullData")]
@@ -27,8 +27,9 @@ namespace GettingDataInMinute
             
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}\n API : {output.API} " +
                                $"\n Description : {output.Description}");
+            var id = _blobStorage.SaveBlob(result); 
             
-            _blobStorage.SaveBlob(output);
+            await _blobStorage.LogRequest(result, id);
         }
     }
 }
